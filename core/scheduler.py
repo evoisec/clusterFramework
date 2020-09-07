@@ -1,8 +1,12 @@
-# importing module.py file
-import callbackmlone as mod
+import sys
+import sampletask as mod
 
-# running the welcome method
 mod.trainMLModel("HMM_1")
+
+sys.exit(0)
+
+
+
 
 module = __import__(module_name)
 my_class = getattr(module, class_name)

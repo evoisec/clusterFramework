@@ -1,5 +1,4 @@
-# import sampletask2, sampletask22
-
+import logging
 import importlib
 
 PLUGIN_NAME = "sampletask2"

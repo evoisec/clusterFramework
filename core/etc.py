@@ -7,11 +7,16 @@ import warnings
 import logging
 import click
 
+# key boilerplate wiring
+#CLI options/parameters
+#Logging
+#Error Handling - exceptions & assertions
+
 logging.basicConfig(level=logging.WARN)
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-
+# Constants
 K_LEFT = 0
 K_RIGHT = 1
 K_UP = 2
@@ -21,6 +26,8 @@ DRIVERS = [
     'piradio.lcd.fake_lcd',
     'piradio.lcd.web_lcd'
 ]
+
+# _func_name, var_name
 
 @click.command()
 @click.option("--als-max-iter", default=10, type=int)

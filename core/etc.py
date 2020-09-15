@@ -43,3 +43,24 @@ if __name__ == "__main__":
         logging.info('Loaded LCD driver %s', drv)
     except OSError:
         logging.warning('Failed to load LCD driver %s', drv)
+
+
+import json
+import kfp
+from kfp import components
+from kfp import dsl
+import os
+import subprocess
+
+diagnose_me_op = components.load_component_from_url(
+    'https://raw.githubusercontent.com/kubeflow/pipelines/566dddfdfc0a6a725b6e50ea85e73d8d5578bbb9/components/diagnostics/diagnose_me/component.yaml')
+
+confusion_matrix_op = components.load_component_from_url('https://raw.githubusercontent.com/kubeflow/pipelines/1.0.0/components/local/confusion_matrix/component.yaml')
+
+roc_op = components.load_component_from_url('https://raw.githubusercontent.com/kubeflow/pipelines/1.0.0/components/local/roc/component.yaml')
+
+dataproc_create_cluster_op = components.load_component_from_url(
+    'https://raw.githubusercontent.com/kubeflow/pipelines/38771da09094640cd2786a4b5130b26ea140f864/components/gcp/dataproc/create_cluster/component.yaml')
+
+dataproc_delete_cluster_op = components.load_component_from_url(
+    'https://raw.githubusercontent.com/kubeflow/pipelines/38771da09094640cd2786a4b5130b26ea140f864/components/gcp/dataproc/delete_cluster/component.yaml')

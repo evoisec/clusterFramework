@@ -44,6 +44,7 @@ if __name__ == "__main__":
     except OSError:
         logging.warning('Failed to load LCD driver %s', drv)
 
+https://github.com/kubeflow/pipelines/blob/master/samples/core/xgboost_training_cm/xgboost_training_cm.py
 
 import json
 import kfp

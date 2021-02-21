@@ -5,16 +5,16 @@ project_id = "studied-client-297916"
 topic_id = "argo"
 
 publisher = pubsub_v1.PublisherClient()
-# The `topic_path` method creates a fully qualified identifier
-# in the form `projects/{project_id}/topics/{topic_id}`
 topic_path = publisher.topic_path(project_id, topic_id)
 
 for n in range(1, 10):
-    data = "Message number {}".format(n)
+    data = "Msg number {}".format(n)
     # Data must be a bytestring
     data = data.encode("utf-8")
-    # When you publish a message, the client returns a future.
-    future = publisher.publish(topic_path, data)
+    # Add two attributes, origin and username, to the message
+    future = publisher.publish(
+        topic_path, data, origin="workflow-orchestrator", event_name="WORKFLOW_COMPLETION"
+    )
     print(future.result())
 
-print(f"Published messages to {topic_path}.")
+print(f"Published messages with custom attributes to {topic_path}.")

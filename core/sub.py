@@ -23,6 +23,11 @@ with subscriber:
     for received_message in response.received_messages:
         print(f"Received: {received_message.message.data}.")
         ack_ids.append(received_message.ack_id)
+        if received_message.message.attributes:
+            print("Attributes:")
+            for key in received_message.message.attributes:
+                value = received_message.message.attributes.get(key)
+                print(f"{key}: {value}")
 
     if len(ack_ids) != 0:
         # Acknowledges the received messages so they will not be sent again.

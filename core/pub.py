@@ -7,7 +7,7 @@ topic_id = "argo"
 publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path(project_id, topic_id)
 
-for n in range(1, 10):
+for n in range(1, 2):
     data = "Msg number {}".format(n)
     # Data must be a bytestring
     data = data.encode("utf-8")

@@ -7,7 +7,7 @@ subscription_id = "central-orchestrator"
 subscriber = pubsub_v1.SubscriberClient()
 subscription_path = subscriber.subscription_path(project_id, subscription_id)
 
-NUM_MESSAGES = 10
+NUM_MESSAGES = 1
 
 # Wrap the subscriber in a 'with' block to automatically call close() to
 # close the underlying gRPC channel when done.
@@ -16,7 +16,7 @@ with subscriber:
     # number of messages pulled may be smaller than max_messages.
     response = subscriber.pull(
         request={"subscription": subscription_path, "max_messages": NUM_MESSAGES},
-        retry=retry.Retry(deadline=300),
+        #retry=retry.Retry(deadline=300),
     )
 
     ack_ids = []

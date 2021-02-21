@@ -21,6 +21,7 @@ with subscriber:
 
     ack_ids = []
     for received_message in response.received_messages:
+        print(received_message)
         print(f"Received: {received_message.message.data}.")
         ack_ids.append(received_message.ack_id)
         if received_message.message.attributes:

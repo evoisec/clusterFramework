@@ -14,6 +14,7 @@ class WorkflowStateMachine:
 
 def process_topic(subscriber, subscription_path, workflow_state_machine):
 
+    # this is synchrnous pull pubsub client - its use is part of the solution for Strictly Sequential Event Processing
     response = subscriber.pull(
         request={"subscription": subscription_path, "max_messages": NUM_MESSAGES},
         #retry=retry.Retry(deadline=300),

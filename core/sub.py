@@ -12,6 +12,12 @@ class WorkflowStateMachine:
   def terminate(self):
       self.terminate_command = True
 
+
+############################################################################################################
+# Note, while processing the messages/events in a topic, here we can loop until all messages are processed
+# still one message at a time ie Strictly Sequentially or we can process just one message per each invokation
+# of this function
+############################################################################################################
 def process_topic(subscriber, subscription_path, workflow_state_machine):
 
     # this is synchrnous pull pubsub client - its use is part of the solution for Strictly Sequential Event Processing
@@ -41,12 +47,12 @@ def process_topic(subscriber, subscription_path, workflow_state_machine):
         f"Received and acknowledged {len(response.received_messages)} messages from {subscription_path}."
     )
 
-    #ToDO: update / process the Workflow State MAchine based on the received events/messages
+    #ToDO: Perform business processing for the messages in the current topic and then update / process the Workflow State MAchine based on the received events/messages
 
     return workflow_state_machine
 
 
-def sdl_event_generator():
+def sdl_event_generator(workflow_state_machine):
     return 0
 
 
@@ -93,7 +99,7 @@ while True:
 
     # Business Logic for the SDL Event Generator (currently a CRON job every 5 min)
 
-    sdl_event_generator()
+    sdl_event_generator(workflow_state_machine)
 
     # Process the command topic of the Central Orchestrator and if necessary terminate/exit the Central Orchestrator
 

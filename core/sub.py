@@ -1,19 +1,19 @@
-from google.api_core import retry
 from google.cloud import pubsub_v1
 
-project_id = "studied-client-297916"
-subscription_id = "central-orchestrator"
 
-subscriber = pubsub_v1.SubscriberClient()
-subscription_path = subscriber.subscription_path(project_id, subscription_id)
+class WorkflowStateMachine:
 
-NUM_MESSAGES = 1
+  state = "Completed"
+  terminate_command = False
 
-# Wrap the subscriber in a 'with' block to automatically call close() to
-# close the underlying gRPC channel when done.
-with subscriber:
-    # The subscriber pulls a specific number of messages. The actual
-    # number of messages pulled may be smaller than max_messages.
+  def is_terminate_command(self):
+      return self.terminate_command
+
+  def terminate(self):
+      self.terminate_command = True
+
+def process_topic(subscriber, subscription_path, workflow_state_machine):
+
     response = subscriber.pull(
         request={"subscription": subscription_path, "max_messages": NUM_MESSAGES},
         #retry=retry.Retry(deadline=300),
@@ -39,3 +39,31 @@ with subscriber:
     print(
         f"Received and acknowledged {len(response.received_messages)} messages from {subscription_path}."
     )
+
+    #ToDO: update / process the Workflow State MAchine based on the received events/messages
+
+    return workflow_state_machine
+
+
+
+project_id = "studied-client-297916"
+
+upstream_subscription_id = "upstream-central-orchestrator"
+sdl_subscription_id = "sdl-central-orchestrator"
+sfl_subscription_id = "sfl-central-orchestrator"
+
+upstream_subscriber = pubsub_v1.SubscriberClient()
+sfl_subscriber = pubsub_v1.SubscriberClient()
+
+upstream_subscription_path = upstream_subscriber.subscription_path(project_id, upstream_subscription_id)
+sfl_subscription_path = sfl_subscriber.subscription_path(project_id, sfl_subscription_id)
+
+NUM_MESSAGES = 1
+
+workflow_state_machine = WorkflowStateMachine()
+
+while True:
+
+    workflow_state_machine = process_topic(upstream_subscriber, upstream_subscription_path, workflow_state_machine)
+
+    workflow_state_machine = process_topic(sfl_subscriber, sfl_subscription_path, workflow_state_machine)

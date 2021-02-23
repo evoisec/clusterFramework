@@ -2,8 +2,8 @@ from datetime import datetime
 from calendar import monthrange
 
 
-def isWorkingDay(specificDate=None):
-    """Returns whether the date passed in meets the critera"""
+def isScheduledDate(specificDate=None):
+    """Returns whether the date passed in meets the criteria"""
 
     if specificDate:
 

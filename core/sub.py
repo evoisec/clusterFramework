@@ -40,6 +40,18 @@ def process_topic(subscriber, subscription_path, workflow_state_machine):
                     value = received_message.message.attributes.get(key)
                     print(f"{key}: {value}")
 
+
+        # ToDO: On first connection to the topic, Ignore and ACK all Event Messages with timestamp older than the
+        # the system time when the connection to the topic was establsihed
+
+        ############################################################################
+        # On first connection to the topic, Ignore and ACK all Event Messages with timestamp older than the
+        # the system time when the new/first connection to the topic was establsihed
+        ############################################################################
+
+        print("Just launched for the first time, positioning at the end of the message topic/queue, thus skpipping all old message in the topic/queue")
+
+
         #ToDO: Dedup the Event Message
 
         ############################################################################

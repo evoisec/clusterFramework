@@ -74,6 +74,9 @@ def process_topic(subscriber, subscription_path, workflow_state_machine):
         ############################################################################
         # Acknowledge the Event Message to GCP PUBSUB
         ############################################################################
+
+        # check whether ACK can still be done and of not, then consume the message again and ACK it
+
         request = {"subscription": subscription_path, "ack_ids": ack_ids}
         subscriber.acknowledge(request)
         print( f"Received and acknowledged {len(response.received_messages)} messages from {subscription_path}." )

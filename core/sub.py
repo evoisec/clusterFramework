@@ -26,28 +26,32 @@ def process_topic(subscriber, subscription_path, workflow_state_machine):
         #retry=retry.Retry(deadline=300),
     )
 
-    ack_ids = []
-    for received_message in response.received_messages:
+    if len(response.received_messages) != 0:
+
+        received_message = response.received_messages[0]
         print(received_message)
         print(f"Received: {received_message.message.data}.")
-        ack_ids.append(received_message.ack_id)
-        if received_message.message.attributes:
-            print("Attributes:")
-            for key in received_message.message.attributes:
-                value = received_message.message.attributes.get(key)
-                print(f"{key}: {value}")
+        ack_ids = [received_message.ack_id]
 
-    if len(ack_ids) != 0:
-        # Acknowledges the received messages so they will not be sent again.
+        if received_message.message.attributes:
+                print("Attributes:")
+                for key in received_message.message.attributes:
+                    value = received_message.message.attributes.get(key)
+                    print(f"{key}: {value}")
+
+
+        #ToDO: Perform business processing for the messages in the current topic and then update / process the Workflow State MAchine based on the received events/messages
+
+
         subscriber.acknowledge(
             request={"subscription": subscription_path, "ack_ids": ack_ids}
         )
 
-    print(
-        f"Received and acknowledged {len(response.received_messages)} messages from {subscription_path}."
-    )
+        print(
+            f"Received and acknowledged {len(response.received_messages)} messages from {subscription_path}."
+        )
 
-    #ToDO: Perform business processing for the messages in the current topic and then update / process the Workflow State MAchine based on the received events/messages
+    # ToDO: perform final operation on the State Machine before return
 
     return workflow_state_machine
 
@@ -87,25 +91,10 @@ while True:
 
     # Business Logic for Upstream EoD Events
 
+    print("#########################################################################################################")
+
     workflow_state_machine = process_topic(upstream_subscriber, upstream_subscription_path, workflow_state_machine)
 
-    # Business Logic for SDL Events
 
-    workflow_state_machine = process_topic(sdl_subscriber, sdl_subscription_path, workflow_state_machine)
-
-    # Business Logic for SFL Events
-
-    workflow_state_machine = process_topic(sfl_subscriber, sfl_subscription_path, workflow_state_machine)
-
-    # Business Logic for the SDL Event Generator (currently a CRON job every 5 min)
-
-    sdl_event_generator(workflow_state_machine)
-
-    # Process the command topic of the Central Orchestrator and if necessary terminate/exit the Central Orchestrator
-
-    workflow_state_machine = process_topic(sfl_subscriber, sfl_subscription_path, workflow_state_machine)
-
-    if workflow_state_machine.is_terminate_command():
-        sys.exit(0)
 
 

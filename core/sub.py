@@ -5,9 +5,38 @@ from google.cloud import pubsub_v1
 # will be played by the CO Audit Log
 class WorkflowStateMachine:
 
-    def __init__(self, message_id):
+    def __init__(self, message_id, is_first_cycle):
         self.gcp_message_id = message_id
+        self.is_first_cycle = is_first_cycle
 
+
+# Enforces strictly sequential message processing (in combination with the used synchronous pull pubsub client type)
+NUM_MESSAGES = 1
+# the default ACK time for the topic
+MESSAGE_ACK_TIME = 10
+
+def main():
+
+    project_id = "studied-client-297916"
+    cc_topic_subscription_id = "cc-internal"
+
+    cc_topic_subscriber = pubsub_v1.SubscriberClient()
+    cc_topic_subscription_path = cc_topic_subscriber.subscription_path(project_id, cc_topic_subscription_id)
+
+    gcp_message_id = None
+
+    workflow_state_machine = WorkflowStateMachine(None, True)
+
+
+    ##############################################################################################
+    # This is the main Central Orchestrator (CO) processing loop. It cycles through each topic (currently only one), processes the messages/events and
+    # updates the CO Audit Log and Workflow State Machine. It exits if it receives a command from the command topic
+    ##############################################################################################
+    while True:
+
+        print("################### Start of New Event Message Processing Cycle #########################################################")
+
+        workflow_state_machine = process_cc_int_topic(cc_topic_subscriber, cc_topic_subscription_path, workflow_state_machine)
 
 
 ############################################################################################################
@@ -16,7 +45,8 @@ class WorkflowStateMachine:
 # of this function
 # The current implementation processes strictly one event message per invocation
 ############################################################################################################
-def process_topic(subscriber, subscription_path, workflow_state_machine):
+def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
+
 
     # this is synchrnous pull pubsub client - its use is part of the solution for Strictly Sequential Event Processing
     response = subscriber.pull(
@@ -35,7 +65,10 @@ def process_topic(subscriber, subscription_path, workflow_state_machine):
         # the topic was establsihed
         ############################################################################
 
-        print("Just launched for the first time, positioning at the end of the message topic/queue, thus skpipping all old message in the topic/queue")
+        if workflow_state_machine.is_first_cycle:
+
+            print("Just launched for the first time, positioning at the end of the message topic/queue, thus skpipping all old message in the topic/queue")
+            workflow_state_machine.is_first_cycle = False
 
 
         received_message = response.received_messages[0]
@@ -115,33 +148,6 @@ def process_topic(subscriber, subscription_path, workflow_state_machine):
     return workflow_state_machine
 
 
-project_id = "studied-client-297916"
-cc_topic_subscription_id = "upstream-central-orchestrator"
 
-cc_topic_subscriber = pubsub_v1.SubscriberClient()
-cc_topic_subscription_path = cc_topic_subscriber.subscription_path(project_id, cc_topic_subscription_id)
-
-# Enforces strictly sequential message processing (in combination with the used synchronous pull pubsub client type)
-NUM_MESSAGES = 1
-
-# the default ACK time for the topic
-MESSAGE_ACK_TIME = 10
-
-gcp_message_id = None
-
-workflow_state_machine = WorkflowStateMachine(None)
-
-
-##############################################################################################
-# This is the main Central Orchestrator (CO) processing loop. It cycles through each topic (currently only one), processes the messages/events and
-# updates the CO Audit Log and Workflow State Machine. It exits if it receives a command from the command topic
-##############################################################################################
-while True:
-
-    print("################### Start of New Event Message Processing Cycle #########################################################")
-
-    workflow_state_machine = process_topic(cc_topic_subscriber, cc_topic_subscription_path, workflow_state_machine)
-
-
-
-
+if __name__ == "__main__":
+    main()

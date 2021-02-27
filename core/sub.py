@@ -1,4 +1,5 @@
 import sys, time
+import subprocess
 from google.cloud import pubsub_v1
 
 # this is just a skeleton/placeholder for a Workflow State Machine (if needed) - for the moment the role of such
@@ -58,7 +59,7 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
         # the system time when the connection to the topic was establsihed
 
         ############################################################################
-        # Go to the end of the topic and start consuming messages from there. Execute only once, On first connection to the topic,
+        # Go to the end of the topic and start consuming messages from there. Execute this step only once, on first connection to the topic,
         # Ignore and ACK all Event Messages with timestamp older than the the system time when the new/first connection to
         # the topic was establsihed
         ############################################################################
@@ -126,6 +127,23 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
         ############################################################################
         print("Triggering CC Argo Workflow")
 
+        # the ping command will be replaced with argo submit
+        process = subprocess.Popen(['ping', 'google.com'],
+                                   stdout=subprocess.PIPE,
+                                   universal_newlines=True)
+
+        while True:
+            output = process.stdout.readline()
+            print(output.strip())
+            # Do something else
+            return_code = process.poll()
+            if return_code is not None:
+                print('RETURN CODE', return_code)
+                # Process has finished, read rest of the output
+                for output in process.stdout.readlines():
+                    print(output.strip())
+                break
+
         ############################################################################
         # Keep checking (for awhile) the CO Audit Log whether the CC Workflow had started - loop for a configurable interval
         # if necessary raise alert
@@ -135,9 +153,7 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
         print("Checking whether the CC Argo Workflow has started")
 
 
-    # ToDO: perform final operation on the State Machine before return
-
-
+    # ToDO: perform final operations on the State Machine if necessary, before return
 
     return workflow_state_machine
 

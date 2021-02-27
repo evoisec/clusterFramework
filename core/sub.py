@@ -65,6 +65,8 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
 
         if workflow_state_machine.is_first_cycle:
 
+            # ToDO: add system time comparison with message timestamp to position precisely at a message which was received after CO launched
+
             print("Just launched for the first time, positioning at the end of the message topic/queue, thus skpipping all old message in the topic/queue")
             workflow_state_machine.is_first_cycle = False
 
@@ -72,10 +74,7 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
                 ack_message(subscriber, subscription_path, received_message)
                 received_message = pull_sync_message(subscriber, subscription_path)
 
-
             return workflow_state_machine
-
-
 
 
 
@@ -155,7 +154,7 @@ def pull_sync_message(subscriber, subscription_path):
         received_message = response.received_messages[0]
         print(received_message)
 
-        print(received_message.message.message_id)
+        print(f"GCP PUBSUB Message ID: {received_message.message.message_id}.")
         print(f"Received: {received_message.message.data}.")
 
         if received_message.message.attributes:

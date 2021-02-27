@@ -49,12 +49,10 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
 
 
     # this is synchrnous pull pubsub client - its use is part of the solution for Strictly Sequential Event Processing
-    response = subscriber.pull(
-        request={"subscription": subscription_path, "max_messages": NUM_MESSAGES},
-        #retry=retry.Retry(deadline=300),
-    )
 
-    if len(response.received_messages) != 0:
+    received_message = pull_sync_message(subscriber, subscription_path)
+
+    if received_message != None:
 
         # ToDO: On first connection to the topic, Ignore and ACK all Event Messages with timestamp older than the
         # the system time when the connection to the topic was establsihed
@@ -70,17 +68,15 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
             print("Just launched for the first time, positioning at the end of the message topic/queue, thus skpipping all old message in the topic/queue")
             workflow_state_machine.is_first_cycle = False
 
+            while received_message != None:
+                ack_message(subscriber, subscription_path, received_message)
+                received_message = pull_sync_message(subscriber, subscription_path)
 
-        received_message = response.received_messages[0]
-        print(received_message)
-        print(f"Received: {received_message.message.data}.")
-        ack_ids = [received_message.ack_id]
 
-        if received_message.message.attributes:
-                print("Attributes:")
-                for key in received_message.message.attributes:
-                    value = received_message.message.attributes.get(key)
-                    print(f"{key}: {value}")
+            return workflow_state_machine
+
+
+
 
 
         #ToDO: Dedup the Event Message
@@ -113,10 +109,9 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
 
         # will not throw error is the ACK time for the message has expired - so here we are just making best effort to ACK
         # the dedup step which will be invoked during the next itteration, will ensure/double check that the message is ACKed
-        request = {"subscription": subscription_path, "ack_ids": ack_ids}
-        subscriber.acknowledge(request)
 
-        print( f"Received, logged in CO Audit Table and made best effort to acknowledge {len(response.received_messages)} messages from {subscription_path}." )
+        ack_message(subscriber, subscription_path, received_message)
+
 
         #ToDO: Perform business processing for the messages in the current topic and then update / process the Workflow State MAchine based on the received events/messages
 
@@ -148,6 +143,39 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
     return workflow_state_machine
 
 
+def pull_sync_message(subscriber, subscription_path):
+
+    response = subscriber.pull(
+        request={"subscription": subscription_path, "max_messages": NUM_MESSAGES},
+        #retry=retry.Retry(deadline=300),
+    )
+
+    if len(response.received_messages) != 0:
+
+        received_message = response.received_messages[0]
+        print(received_message)
+
+        print(received_message.message.message_id)
+        print(f"Received: {received_message.message.data}.")
+
+        if received_message.message.attributes:
+            print("Attributes:")
+            for key in received_message.message.attributes:
+                value = received_message.message.attributes.get(key)
+                print(f"{key}: {value}")
+
+        return received_message
+
+    else:
+
+        return None
+
+def ack_message(subscriber, subscription_path, received_message):
+    ack_ids = [received_message.ack_id]
+    request = {"subscription": subscription_path, "ack_ids": ack_ids}
+    subscriber.acknowledge(request)
+
+    print(f"Received, logged in CO Audit Table and made best effort to acknowledge one message from {subscription_path}.")
 
 if __name__ == "__main__":
     main()

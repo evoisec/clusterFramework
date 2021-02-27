@@ -82,43 +82,65 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
             return workflow_state_machine
 
 
+######################################################################################################################
+#
+# Retrieve all pending messages from the topic and persist them in the CO Audit Log which playes a role as a classic Queue
+#
+######################################################################################################################
 
-        #ToDO: Dedup the Event Message
+        while received_message != None:
 
-        ############################################################################
-        # Dedup the Event Message against CO Audit Log, here also skip any further processing - if dedup conditions encountered
-        ############################################################################
 
-        # ACK immediately if duplicate or already processed and go back to the message consumption step
+            #ToDO: Dedup the Event Message
 
-        print("Deduping the Event Message against the CO Audit Log")
+            ############################################################################
+            # Dedup the Event Message against CO Audit Log, here also skip any further processing - if dedup conditions encountered
+            ############################################################################
 
-        #ToDO: Persist the Event Message to the CO Audit Log
+            # ACK immediately if duplicate or already processed and go back to the message consumption step
 
-        ############################################################################
-        # Persist the Event Message in CO Audit Log conditional on only if it doesnt already exist there
-        # When done here, it prevents Race Conditions between CO and the CC Workflows when updating the CO Audit Log
-        # This step corresponds to Workflow State = Event Message Received by CO and Stored in CO Audit Log
-        ############################################################################
+            print("Deduping the Event Message against the CO Audit Log")
 
-        print("Persisting the Event Message to the CO Audit Log")
+            #ToDO: Persist the Event Message to the CO Audit Log
 
-        ############################################################################
-        # Acknowledge the Event Message to GCP PUBSUB
-        ############################################################################
+            ############################################################################
+            # Persist the Event Message in CO Audit Log conditional on only if it doesnt already exist there
+            # When done here, it prevents Race Conditions between CO and the CC Workflows when updating the CO Audit Log
+            # This step corresponds to Workflow State = Event Message Received by CO and Stored in CO Audit Log
+            ############################################################################
 
-        # simulates business processing so the time for ACK expires - to be removed, used only for testing/simulation
-        # default topic time for ACK is 10 sec
-        #time.sleep(MESSAGE_ACK_TIME + 10)
+            print("Persisting the Event Message to the CO Audit Log")
 
-        # will not throw error is the ACK time for the message has expired - so here we are just making best effort to ACK
-        # the dedup step which will be invoked during the next itteration, will ensure/double check that the message is ACKed
+            ############################################################################
+            # Acknowledge the Event Message to GCP PUBSUB
+            ############################################################################
 
-        ack_message(subscriber, subscription_path, received_message)
+            # simulates business processing so the time for ACK expires - to be removed, used only for testing/simulation
+            # default topic time for ACK is 10 sec
+            #time.sleep(MESSAGE_ACK_TIME + 10)
+
+            # will not throw error is the ACK time for the message has expired - so here we are just making best effort to ACK
+            # the dedup step which will be invoked during the next itteration, will ensure/double check that the message is ACKed
+
+            ack_message(subscriber, subscription_path, received_message)
+
+            received_message = pull_sync_message(subscriber, subscription_path)
+
+
+####################################################################################################################################################
+#
+# End of the First Phase of the CO Event Processing Cycle and Start of the Second Phase
+#
+# First Phase: Persist all CURRENTLY pending / available message from the topic to the CO Audit Log
+#
+# Second Phase: Process all outstanding messages in the CO Audit Log by launching CC Argo Workflows
+#
+####################################################################################################################################################
 
 
         #ToDO: Perform business processing for the messages in the current topic and then update / process the Workflow State MAchine based on the received events/messages
 
+        # For Each Pending Message in CO Audit Log perform the following steps:
 
         ############################################################################
         # Map Event Message to CC Argo Workflow Name

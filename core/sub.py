@@ -53,7 +53,11 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
 
     received_message = pull_sync_message(subscriber, subscription_path)
 
-    if received_message != None:
+    if received_message == None:
+
+        workflow_state_machine.is_first_cycle = False
+
+    else:
 
         # ToDO: On first connection to the topic, Ignore and ACK all Event Messages with timestamp older than the
         # the system time when the connection to the topic was establsihed

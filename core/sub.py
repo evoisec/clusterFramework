@@ -179,8 +179,11 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
     ############################################################################
     print("Triggering CC Argo Workflow")
 
-    # the echo command will be replaced with argo submit
+    # the echo command will be replaced with argo submit - this ia version only for when using the eacho command which
+    # part of / embedded in the OS schell
     process = subprocess.Popen(['echo', workflow_name], stdout=subprocess.PIPE, universal_newlines=True, shell=True)
+
+    # uncomment this when using the actual argo submit command
     # process = subprocess.Popen(['echo', workflow_name], stdout=subprocess.PIPE, universal_newlines=True)
 
     while True:

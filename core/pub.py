@@ -14,7 +14,7 @@ for n in range(1, 4):
     data = data.encode("utf-8")
     # Add two attributes, origin and username, to the message
     future = upstream_publisher.publish(
-         upstream_topic_path, data, origin="workflow-orchestrator", event_name="UPSTREAM_WORKFLOW_COMPLETION"
+         upstream_topic_path, data, origin="workflow-orchestrator", event_name="ledger_refresh_completion"
     )
     print(future.result())
 

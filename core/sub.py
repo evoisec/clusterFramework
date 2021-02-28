@@ -35,15 +35,15 @@ def main():
         event_map_reader = csv.reader(csvfile, skipinitialspace=True, delimiter=',')
         for event_map_row in event_map_reader:
             print(event_map_row)
-            print(event_map_row[0])
-            print(event_map_row[1])
-            print(event_map_row[2])
 
-            event_map[event_map_row[0]] = (event_map_row[1], event_map_row[2])
+            key = event_map_row[0]
+            del event_map_row[0]
+            print(event_map_row)
+            event_map[key] = event_map_row
 
-    # print(event_map.get("ledger_refresh_completion"))
-    # print(event_map.get("ledger_refresh_completion")[0])
-
+    #print(event_map.get("ledger_refresh_completion"))
+    #print(event_map.get("ledger_refresh_completion")[0])
+    #sys.exit(0)
 
     workflow_state_machine = WorkflowStateMachine(True, event_map, [])
 
@@ -182,48 +182,51 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
     event_name = event_data_json["event_name"]
     print(event_name)
 
-    workflow_name = workflow_state_machine.event_map.get(event_name)[0]
-    print(workflow_name)
-    reporting_date  = event_data_json["reporting_date"]
-    print(reporting_date)
+    workflow_names = workflow_state_machine.event_map.get(event_name)
 
-    cmd_str = workflow_name + " " + event_data.decode("utf-8") + " " + reporting_date
+    for workflow_name in workflow_names:
 
-    ############################################################################
-    # Trigger CC Argo Workflow by invoking the "argo submit" as a shell command
-    ############################################################################
-    print("Triggering CC Argo Workflow")
+        print(workflow_name)
+        reporting_date  = event_data_json["reporting_date"]
+        print(reporting_date)
 
-    # the echo command will be replaced with argo submit - this ia version only for when using the eacho command which
-    # part of / embedded in the OS schell
-    process = subprocess.Popen(['echo', cmd_str], stdout=subprocess.PIPE, universal_newlines=True, shell=True)
-    # uncomment this when using the actual argo submit command
-    # process = subprocess.Popen(['echo', workflow_name], stdout=subprocess.PIPE, universal_newlines=True)
+        cmd_str = workflow_name + " " + event_data.decode("utf-8") + " " + reporting_date
 
-    # note, the below approach keeps receiving as a real-time stream, the output form the launched command and this provides it with
-    # opportunity to parse it an dmake decisions about error conditions etc in real-time
-    while True:
-        output = process.stdout.readline()
-        print(output.strip())
-        # Do something else
-        return_code = process.poll()
-        if return_code is not None:
-            print('RETURN CODE', return_code)
-            # Process has finished, read rest of the output
-            for output in process.stdout.readlines():
-                print(output.strip())
-            break
+        ############################################################################
+        # Trigger CC Argo Workflow by invoking the "argo submit" as a shell command
+        ############################################################################
+        print("Triggering CC Argo Workflow")
 
-    ############################################################################
-    # Keep checking (for awhile) the CO Audit Log whether the CC Workflow had started - loop for a configurable interval
-    # if necessary raise alert
-    # this can be enhanced further by streaming the real-time log of the CC Argo Workflow with the "argo submit --log" command
-    # and parsing and scanning the log for error conditions
-    ############################################################################
-    print("Checking whether the CC Argo Workflow has started")
+        # the echo command will be replaced with argo submit - this ia version only for when using the eacho command which
+        # part of / embedded in the OS schell
+        process = subprocess.Popen(['echo', cmd_str], stdout=subprocess.PIPE, universal_newlines=True, shell=True)
+        # uncomment this when using the actual argo submit command
+        # process = subprocess.Popen(['echo', workflow_name], stdout=subprocess.PIPE, universal_newlines=True)
+
+        # note, the below approach keeps receiving as a real-time stream, the output form the launched command and this provides it with
+        # opportunity to parse it an dmake decisions about error conditions etc in real-time
+        while True:
+            output = process.stdout.readline()
+            print(output.strip())
+            # Do something else
+            return_code = process.poll()
+            if return_code is not None:
+                print('RETURN CODE', return_code)
+                # Process has finished, read rest of the output
+                for output in process.stdout.readlines():
+                    print(output.strip())
+                break
+
+        ############################################################################
+        # Keep checking (for awhile) the CO Audit Log whether the CC Workflow had started - loop for a configurable interval
+        # if necessary raise alert
+        # this can be enhanced further by streaming the real-time log of the CC Argo Workflow with the "argo submit --log" command
+        # and parsing and scanning the log for error conditions
+        ############################################################################
+        print("Checking whether the CC Argo Workflow has started")
 
 
-    # ToDO: perform final operations on the State Machine if necessary, before return
+        # ToDO: perform final operations on the State Machine if necessary, before return
 
     return workflow_state_machine
 

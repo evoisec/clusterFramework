@@ -9,12 +9,12 @@ upstream_publisher = pubsub_v1.PublisherClient()
 upstream_topic_path = upstream_publisher.topic_path(project_id, upstream_topic_id)
 
 for n in range(1, 4):
-    data = "Message number {}".format(n)
+    data = """{"event_name":"ledger_refresh_completion","source":workflow_1,"is_cascade":true}"""
     #     Data must be a bytestring
     data = data.encode("utf-8")
     # Add two attributes, origin and username, to the message
     future = upstream_publisher.publish(
-         upstream_topic_path, data, origin="workflow-orchestrator", event_name="ledger_refresh_completion"
+         upstream_topic_path, data, origin="workflow-orchestrator", event_name="ledger_refresh_completion", event_seq_number = str(n)
     )
     print(future.result())
 

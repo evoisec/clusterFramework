@@ -7,9 +7,10 @@ from google.cloud import pubsub_v1
 # will be played by the CO Audit Log
 class WorkflowStateMachine:
 
-    def __init__(self, is_first_cycle, event_map):
+    def __init__(self, is_first_cycle, event_map, event_queue):
         self.is_first_cycle = is_first_cycle
         self.event_map = event_map
+        self.event_queue = event_queue
 
 
 # Enforces strictly sequential message processing (in combination with the used synchronous pull pubsub client type)
@@ -43,7 +44,7 @@ def main():
     # print(event_map.get("ledger_refresh_completion")[0])
 
 
-    workflow_state_machine = WorkflowStateMachine(True, event_map)
+    workflow_state_machine = WorkflowStateMachine(True, event_map, [])
 
 
     ##############################################################################################
@@ -108,8 +109,12 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
 #
 ######################################################################################################################
 
+    # this is a temp hack required onlty for testing
+    last_received_message = None
+
     while received_message != None:
 
+        last_received_message = received_message
 
         #ToDO: Dedup the Event Message
 
@@ -168,11 +173,13 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
 
     print("Mapping Event Message to CC Argo Workflow Name")
 
-    event_name = received_message.message.attributes.get("event_name")
+    # last_received_message is a temp hack only for testing - replace with event retrieved from CO Audit Log
+    event_name = last_received_message.message.attributes.get("event_name")
 
     print(event_name)
 
     workflow_name = workflow_state_machine.event_map.get(event_name)[0]
+    event_data = last_received_message.message.data
 
     ############################################################################
     # Trigger CC Argo Workflow by invoking the "argo submit" as a shell command
@@ -181,7 +188,7 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
 
     # the echo command will be replaced with argo submit - this ia version only for when using the eacho command which
     # part of / embedded in the OS schell
-    process = subprocess.Popen(['echo', workflow_name], stdout=subprocess.PIPE, universal_newlines=True, shell=True)
+    process = subprocess.Popen(['echo', workflow_name + " " + event_data.decode("utf-8")], stdout=subprocess.PIPE, universal_newlines=True, shell=True)
 
     # uncomment this when using the actual argo submit command
     # process = subprocess.Popen(['echo', workflow_name], stdout=subprocess.PIPE, universal_newlines=True)

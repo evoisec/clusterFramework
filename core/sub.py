@@ -174,7 +174,7 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
 
     print("Mapping Event Message to CC Argo Workflow Name")
 
-    # last_received_message is a temp hack only for testing - replace with event retrieved from CO Audit Log
+    # last_received_message is a temp hack only for testing this branch of the program - replace with event data retrieved from CO Audit Log
 
     event_data = last_received_message.message.data
     event_data_json = json.loads(event_data)

@@ -9,7 +9,7 @@ upstream_publisher = pubsub_v1.PublisherClient()
 upstream_topic_path = upstream_publisher.topic_path(project_id, upstream_topic_id)
 
 for n in range(1, 4):
-    data = """{"event_name":"ledger_refresh_completion","source":workflow_1,"is_cascade":true}"""
+    data = """{"event_name":"ledger_refresh_completion","source":"workflow_1","is_cascade":true,"reporting_date":"2021-3-3"}"""
     #     Data must be a bytestring
     data = data.encode("utf-8")
     # Add two attributes, origin and username, to the message

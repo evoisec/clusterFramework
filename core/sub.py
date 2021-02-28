@@ -1,5 +1,6 @@
 import sys, time
 import csv
+import json
 import subprocess
 from google.cloud import pubsub_v1
 
@@ -174,12 +175,19 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
     print("Mapping Event Message to CC Argo Workflow Name")
 
     # last_received_message is a temp hack only for testing - replace with event retrieved from CO Audit Log
-    event_name = last_received_message.message.attributes.get("event_name")
 
+    event_data = last_received_message.message.data
+    event_data_json = json.loads(event_data)
+
+    event_name = event_data_json["event_name"]
     print(event_name)
 
     workflow_name = workflow_state_machine.event_map.get(event_name)[0]
-    event_data = last_received_message.message.data
+    print(workflow_name)
+    reporting_date  = event_data_json["reporting_date"]
+    print(reporting_date)
+
+    cmd_str = workflow_name + " " + event_data.decode("utf-8") + " " + reporting_date
 
     ############################################################################
     # Trigger CC Argo Workflow by invoking the "argo submit" as a shell command
@@ -188,11 +196,12 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
 
     # the echo command will be replaced with argo submit - this ia version only for when using the eacho command which
     # part of / embedded in the OS schell
-    process = subprocess.Popen(['echo', workflow_name + " " + event_data.decode("utf-8")], stdout=subprocess.PIPE, universal_newlines=True, shell=True)
-
+    process = subprocess.Popen(['echo', cmd_str], stdout=subprocess.PIPE, universal_newlines=True, shell=True)
     # uncomment this when using the actual argo submit command
     # process = subprocess.Popen(['echo', workflow_name], stdout=subprocess.PIPE, universal_newlines=True)
 
+    # note, the below approach keeps receiving as a real-time stream, the output form the launched command and this provides it with
+    # opportunity to parse it an dmake decisions about error conditions etc in real-time
     while True:
         output = process.stdout.readline()
         print(output.strip())

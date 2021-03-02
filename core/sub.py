@@ -88,9 +88,27 @@ def process_cc_int_topic(subscriber, subscription_path, workflow_state_machine):
         print("Just launched for the first time, positioning at the end of the message topic/queue, thus skpipping all old message in the topic/queue")
         workflow_state_machine.is_first_cycle = False
 
-        while received_message != None:
+        co_launch_time = time.time()
+        co_launch_time_seconds = int(co_launch_time)
+
+        msg_pub_time = received_message.message.publish_time
+        msg_pub_time_seconds = int(msg_pub_time.timestamp())
+
+        while co_launch_time_seconds >= msg_pub_time_seconds:
+
+            print("purging older messags")
+
             ack_message(subscriber, subscription_path, received_message)
             received_message = pull_sync_message(subscriber, subscription_path)
+
+            if received_message != None:
+
+                msg_pub_time = received_message.message.publish_time
+                msg_pub_time_seconds = int(msg_pub_time.timestamp())
+
+            else:
+
+                msg_pub_time_seconds = co_launch_time_seconds + 1
 
         return workflow_state_machine
 

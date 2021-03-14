@@ -8,7 +8,9 @@
 
     {
       "event_name":"event2",
-      "workflow_names":[ "workflow-2", "workflow-3", "workflow-4" ]
+      "workflow_names":[ "workflow-2",
+                         "workflow-3",
+                         "workflow-43" ]
     }
 
   ]

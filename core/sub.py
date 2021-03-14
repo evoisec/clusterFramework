@@ -41,6 +41,9 @@ def main():
             print(event_map_row)
             event_map[key] = event_map_row
 
+    print(event_map)
+    sys.exit(0)
+
     #print(event_map.get("ledger_refresh_completion"))
     #print(event_map.get("ledger_refresh_completion")[0])
     #sys.exit(0)

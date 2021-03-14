@@ -1,0 +1,16 @@
+{
+  "event_map": [
+
+    {
+      "event_name":"event1",
+      "workflow_names":[ "workflow-1" ]
+    },
+
+    {
+      "event_name":"event2",
+      "workflow_names":[ "workflow-2", "workflow-3", "workflow-4" ]
+    }
+
+  ]
+
+}

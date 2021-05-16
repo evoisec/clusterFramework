@@ -13,8 +13,10 @@ app = application.Application().connect(path=r"E:\\SC-TRADING\\SierraChart_64.ex
 #pywinauto.findwindows.enum_windows()
 
 #get all windows titles for SC
-#dialogs = app.windows()
-#print(dialogs)
+dialogs = app.windows()
+print(dialogs)
+
+sys.exit(0)
 
 #dlg_spec = app.window(title_re=".*#6.*")
 #dlg_spec1 = app.window(title_re=".*#4.*")
@@ -43,7 +45,8 @@ pywinauto.timings.Timings.slow()
 #dlg_spec1.maximize()
 
 dlg_spec1.set_focus()
-dlg_spec1.move_window(1920, 0) # move the window to top-left corner - also for window resize
+
+#dlg_spec1.move_window(1920, 0) # move the window to top-left corner - also for window resize
 
 
 

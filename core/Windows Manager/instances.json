@@ -1,0 +1,125 @@
+{
+     "Paths": [
+          "E:/1-SC-FX/SierraChart_64.exe",
+          "E:/1-SC-COMMODITY/SierraChart_64.exe",
+          "E:/SC-TRADING/SierraChart_64.exe",
+          "E:/SC-EUREX/SierraChart_64.exe"
+     ],
+     "Autoplay": 5,
+     "Instances": {
+          "GOLD-MAX": {
+               "E:/1-SC-COMMODITY/SierraChart_64.exe": [
+                    [
+                         "F.US.GCEQ21  0.4 Range  #2 | COMEX 100 GOLD FUTURES GC Aug 2021 (Aug21)",
+                         "SCDW_FloatingChart"
+                    ],
+                    [
+                         "F.US.GCEQ21  0.4 Range  #5 | COMEX 100 GOLD FUTURES GC Aug 2021 (Aug21)",
+                         "SCDW_FloatingChart"
+                    ],
+                    [
+                         "F.US.GCEQ21  1.4 Range  #1 | COMEX 100 GOLD FUTURES GC Aug 2021 (Aug21)",
+                         "SCDW_FloatingChart"
+                    ],
+                    [
+                         "F.US.GCEQ21  1.4 Range  #6 | COMEX 100 GOLD FUTURES GC Aug 2021 (Aug21)",
+                         "SCDW_FloatingChart"
+                    ]
+               ],
+               "color": "#dadada"
+          },
+          "GOLD-RES": {
+               "E:/1-SC-COMMODITY/SierraChart_64.exe": [
+                    [
+                         "F.US.GCEQ21  0.4 Range  #2 | COMEX 100 GOLD FUTURES GC Aug 2021 (Aug21)",
+                         "SCDW_FloatingChart"
+                    ],
+                    [
+                         "F.US.GCEQ21  0.4 Range  #5 | COMEX 100 GOLD FUTURES GC Aug 2021 (Aug21)",
+                         "SCDW_FloatingChart"
+                    ],
+                    [
+                         "F.US.GCEQ21  1.4 Range  #1 | COMEX 100 GOLD FUTURES GC Aug 2021 (Aug21)",
+                         "SCDW_FloatingChart"
+                    ],
+                    [
+                         "F.US.GCEQ21  1.4 Range  #6 | COMEX 100 GOLD FUTURES GC Aug 2021 (Aug21)",
+                         "SCDW_FloatingChart"
+                    ]
+               ],
+               "color": "#dadada"
+          },
+          "ES-MAX": {
+               "E:/SC-EUREX/SierraChart_64.exe": [
+                    [
+                         "F.US.EPU21 [C]  1.00 Range  #2 4R-FULL-XRAY | E-MINI S&P 500 FUTURES ES Sep 2021 (Sep21)",
+                         "SCDW_FloatingChart"
+                    ]
+               ],
+               "color": "#dadada",
+               "E:/SC-TRADING/SierraChart_64.exe": [
+                    [
+                         "F.US.EPU21 [C]  1.00 Range  #5 4R-FULL-XRAY | E-MINI S&P 500 FUTURES ES Sep 2021 (Sep21)",
+                         "SCDW_FloatingChart"
+                    ],
+                    [
+                         "F.US.EPU21 [C]  3.50 Range  #13 | E-MINI S&P 500 FUTURES ES Sep 2021 (Sep21)",
+                         "SCDW_FloatingChart"
+                    ],
+                    [
+                         "F.US.EPU21 [C]  3.50 Range  #3 | E-MINI S&P 500 FUTURES ES Sep 2021 (Sep21)",
+                         "SCDW_FloatingChart"
+                    ]
+               ]
+          },
+          "ES-RES": {
+               "E:/SC-EUREX/SierraChart_64.exe": [
+                    [
+                         "F.US.EPU21 [C]  1.00 Range  #2 4R-FULL-XRAY | E-MINI S&P 500 FUTURES ES Sep 2021 (Sep21)",
+                         "SCDW_FloatingChart"
+                    ]
+               ],
+               "color": "#dadada",
+               "E:/SC-TRADING/SierraChart_64.exe": [
+                    [
+                         "F.US.EPU21 [C]  1.00 Range  #5 4R-FULL-XRAY | E-MINI S&P 500 FUTURES ES Sep 2021 (Sep21)",
+                         "SCDW_FloatingChart"
+                    ],
+                    [
+                         "F.US.EPU21 [C]  3.50 Range  #13 | E-MINI S&P 500 FUTURES ES Sep 2021 (Sep21)",
+                         "SCDW_FloatingChart"
+                    ],
+                    [
+                         "F.US.EPU21 [C]  3.50 Range  #3 | E-MINI S&P 500 FUTURES ES Sep 2021 (Sep21)",
+                         "SCDW_FloatingChart"
+                    ]
+               ]
+          },
+          "ES-TR": {
+               "E:/SC-TRADING/SierraChart_64.exe": [
+                    [
+                         "F.US.EPU21 [C]  Rev. 160t  #1 | E-MINI S&P 500 FUTURES ES Sep 2021 (Sep21)",
+                         "SCDW_FloatingChart"
+                    ],
+                    [
+                         "F.US.EPU21 [C]  Rev. 18t  #4 | E-MINI S&P 500 FUTURES ES Sep 2021 (Sep21)",
+                         "SCDW_FloatingChart"
+                    ],
+                    [
+                         "F.US.EPU21 [C]  Rev. 36t  #9 | E-MINI S&P 500 FUTURES ES Sep 2021 (Sep21)",
+                         "SCDW_FloatingChart"
+                    ]
+               ],
+               "color": "#dadada"
+          },
+          "FX": {
+               "E:/1-SC-FX/SierraChart_64.exe": [
+                    [
+                         "F.US.DA6U21 [C]  0.00020 Range  #3 | AUSTRALIAN DOLLAR FUTURES 6A Sep 2021 (Sep21)",
+                         "SCDW_FloatingChart"
+                    ]
+               ],
+               "color": "#dadada"
+          }
+     }
+}

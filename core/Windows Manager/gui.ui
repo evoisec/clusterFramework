@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>720</width>
+    <height>360</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Windows Manager - Home</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>20</y>
+      <width>611</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Gill Sans MT</family>
+      <pointsize>90</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Windows</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>110</y>
+      <width>581</width>
+      <height>181</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Gill Sans MT</family>
+      <pointsize>90</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Manager</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>720</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuMenus">
+    <property name="title">
+     <string>Menus</string>
+    </property>
+    <addaction name="createAction"/>
+    <addaction name="openAction"/>
+    <addaction name="separator"/>
+    <addaction name="quitAction"/>
+   </widget>
+   <widget class="QMenu" name="menuConfig">
+    <property name="title">
+     <string>Config</string>
+    </property>
+    <addaction name="configAction"/>
+    <addaction name="separator"/>
+    <addaction name="locationAction"/>
+    <addaction name="autoAction"/>
+   </widget>
+   <addaction name="menuMenus"/>
+   <addaction name="menuConfig"/>
+  </widget>
+  <action name="createAction">
+   <property name="text">
+    <string>Create New Instance</string>
+   </property>
+  </action>
+  <action name="openAction">
+   <property name="text">
+    <string>Open Existing Instances</string>
+   </property>
+  </action>
+  <action name="quitAction">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="locationAction">
+   <property name="text">
+    <string>Saved .exe Locations</string>
+   </property>
+  </action>
+  <action name="autoplayAction">
+   <property name="text">
+    <string>Autoplay Speed</string>
+   </property>
+  </action>
+  <action name="configAction">
+   <property name="text">
+    <string>Config Menu</string>
+   </property>
+  </action>
+  <action name="autoAction">
+   <property name="text">
+    <string>Autoplay Settings</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
